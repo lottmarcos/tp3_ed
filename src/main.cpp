@@ -1,5 +1,3 @@
-#include <iostream>
-#include <cstring>
 #include "TP3.h"
 
 using namespace std;
@@ -62,7 +60,24 @@ int main(int argc, char **argv)
       return 0;
    }
 
-   // ----------------- INICIO DO PROGRAMA ----------------- //
+   // inicia registro de acesso
+   string lognome = "memlog.out";
+   int n = lognome.length();
+   char char_array[n + 1];
+   strcpy(char_array, lognome.c_str());
+   iniciaMemLog(&char_array[0]);
+   ativaMemLog();
 
-   return 0;
+   // ----------------- INICIO DO PROGRAMA ----------------- //
+   // variáveis iniciais e auxiliares
+   string CONSULTA = "CONSULTA", APAGA = "APAGA", ENTREGA = "ENTREGA";
+   string str, trash, palavra;
+   int M = 0, U = 0, E = 0, N = 0;
+
+   // consegue o tamanho da tabela hash
+   input_file >> M;
+
+   cout << "M: " << M << endl;
+
+   return finalizaMemLog();
 }
