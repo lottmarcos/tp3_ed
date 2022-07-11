@@ -44,8 +44,7 @@ void bintree::insere_recursivo(tipo_no *&p, email mensagem, int memlog)
    }
    else
    {
-      LEMEMLOG((long int)(&mensagem), (long int)sizeof(int), memlog);
-      LEMEMLOG((long int)(&p->mensagem), (long int)sizeof(int), memlog);
+      LEMEMLOG((long int)(&mensagem.id_msg), (long int)sizeof(int), memlog);
       if (mensagem.id_msg < p->mensagem.id_msg)
          insere_recursivo(p->esq, mensagem, memlog);
       else
@@ -69,8 +68,7 @@ email bintree::pesquisa_recursivo(tipo_no *no, email mensagem, int memlog)
       aux.id_msg = -1;
       return aux;
    }
-   LEMEMLOG((long int)(&mensagem), (long int)sizeof(int), memlog);
-   LEMEMLOG((long int)(&no->mensagem), (long int)sizeof(int), memlog);
+   LEMEMLOG((long int)(&mensagem.id_msg), (long int)sizeof(int), memlog);
    if (mensagem.id_msg < no->mensagem.id_msg)
       return pesquisa_recursivo(no->esq, mensagem, memlog);
    else if (mensagem.id_msg > no->mensagem.id_msg)
@@ -92,8 +90,7 @@ void bintree::remove_recursivo(tipo_no *&no, email mensagem, int memlog)
    {
       saida << "ERRO: MENSAGEM INEXISTENTE" << endl;
    }
-   LEMEMLOG((long int)(&mensagem), (long int)sizeof(int), memlog);
-   LEMEMLOG((long int)(&no->mensagem), (long int)sizeof(int), memlog);
+   LEMEMLOG((long int)(&mensagem.id_msg), (long int)sizeof(int), memlog);
    if (mensagem.id_msg < no->mensagem.id_msg)
       return remove_recursivo(no->esq, mensagem, memlog);
    else if (mensagem.id_msg > no->mensagem.id_msg)
@@ -212,7 +209,7 @@ void entregar_email(hashtable *servidor, email mensagem, int U, string _texto, i
    mensagem.id_dest = U;
    mensagem.texto = _texto;
 
-   ESCREVEMEMLOG((long int)(&mensagem), (long int)sizeof(int), 0);
+   ESCREVEMEMLOG((long int)(&mensagem.id_msg), (long int)sizeof(int), 0);
 
    servidor->insere(mensagem, M, 0);
 }
@@ -221,7 +218,7 @@ void consultar_email(hashtable *servidor, email mensagem, int U, int M, int E)
    mensagem.id_msg = E;
    mensagem.id_dest = U;
 
-   ESCREVEMEMLOG((long int)(&mensagem), (long int)sizeof(int), 1);
+   ESCREVEMEMLOG((long int)(&mensagem.id_msg), (long int)sizeof(int), 1);
 
    servidor->pesquisa(mensagem, M, 1, 1);
 }
@@ -230,7 +227,7 @@ void apagar_email(hashtable *servidor, email mensagem, int U, int M, int E)
    mensagem.id_msg = E;
    mensagem.id_dest = U;
 
-   ESCREVEMEMLOG((long int)(&mensagem), (long int)sizeof(int), 2);
+   ESCREVEMEMLOG((long int)(&mensagem.id_msg), (long int)sizeof(int), 2);
 
    servidor->remove(mensagem, M, 2);
 }
