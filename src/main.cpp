@@ -88,6 +88,7 @@ int main(int argc, char **argv)
       // realiza a função ENTREGAR
       if (aux == ENTREGA)
       {
+         defineFaseMemLog(0); // define fase memlog para função ENTREGAR
          string MSG;
          string palavra;
          input_file >> U >> E >> N;
@@ -106,12 +107,14 @@ int main(int argc, char **argv)
       // realiza a função CONSULTAR
       else if (aux == CONSULTA)
       {
+         defineFaseMemLog(1); // define fase memlog para função CONSULTAR
          input_file >> U >> E;
          consultar_email(servidor, mensagem, U, M, E);
       }
       // realiza a função APAGAR
       else if (aux == APAGA)
       {
+         defineFaseMemLog(2); // define fase memlog para função APAGAR
          input_file >> U >> E;
          apagar_email(servidor, mensagem, U, M, E);
       }

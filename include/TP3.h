@@ -48,16 +48,16 @@ class bintree
 public:
    bintree();
    ~bintree();
-   void insere(email mensagem);
+   void insere(email mensagem, int memlog);
    void caminha(int tipo);
    void limpa();
-   email pesquisa(email mensagem);
-   void remove(email mensagem);
+   email pesquisa(email mensagem, int memlog);
+   void remove(email mensagem, int memlog);
 
-   void insere_recursivo(tipo_no *&p, email mensagem);
+   void insere_recursivo(tipo_no *&p, email mensagem, int memlog);
    void apaga_recursivo(tipo_no *p);
-   email pesquisa_recursivo(tipo_no *p, email mensagem);
-   void remove_recursivo(tipo_no *&p, email mensagem);
+   email pesquisa_recursivo(tipo_no *p, email mensagem, int memlog);
+   void remove_recursivo(tipo_no *&p, email mensagem, int memlog);
    void antecessor(tipo_no *q, tipo_no *&r);
    tipo_no *raiz;
 };
@@ -67,9 +67,9 @@ class hashtable
 {
 public:
    hashtable(int M);
-   email pesquisa(email mensagem, int M, int Tipo);
-   void insere(email mensagem, int M);
-   void remove(email mensagem, int M);
+   email pesquisa(email mensagem, int M, int Tipo, int memlog);
+   void insere(email mensagem, int M, int memlog);
+   void remove(email mensagem, int M, int memlog);
 
    int hash_id(email mensagem, int M);
    bintree *table;

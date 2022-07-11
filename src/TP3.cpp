@@ -31,11 +31,11 @@ bintree::~bintree()
 {
    limpa();
 }
-void bintree::insere(email mensagem)
+void bintree::insere(email mensagem, int memlog)
 {
-   insere_recursivo(raiz, mensagem);
+   insere_recursivo(raiz, mensagem, memlog);
 }
-void bintree::insere_recursivo(tipo_no *&p, email mensagem)
+void bintree::insere_recursivo(tipo_no *&p, email mensagem, int memlog)
 {
    if (p == NULL)
    {
@@ -44,10 +44,12 @@ void bintree::insere_recursivo(tipo_no *&p, email mensagem)
    }
    else
    {
+      LEMEMLOG((long int)(&mensagem), (long int)sizeof(int), memlog);
+      LEMEMLOG((long int)(&p->mensagem), (long int)sizeof(int), memlog);
       if (mensagem.id_msg < p->mensagem.id_msg)
-         insere_recursivo(p->esq, mensagem);
+         insere_recursivo(p->esq, mensagem, memlog);
       else
-         insere_recursivo(p->dir, mensagem);
+         insere_recursivo(p->dir, mensagem, memlog);
    }
 }
 void bintree::limpa()
@@ -55,11 +57,11 @@ void bintree::limpa()
    apaga_recursivo(raiz);
    raiz = NULL;
 }
-email bintree::pesquisa(email mensagem)
+email bintree::pesquisa(email mensagem, int memlog)
 {
-   return pesquisa_recursivo(raiz, mensagem);
+   return pesquisa_recursivo(raiz, mensagem, memlog);
 }
-email bintree::pesquisa_recursivo(tipo_no *no, email mensagem)
+email bintree::pesquisa_recursivo(tipo_no *no, email mensagem, int memlog)
 {
    email aux;
    if (no == NULL)
@@ -67,18 +69,20 @@ email bintree::pesquisa_recursivo(tipo_no *no, email mensagem)
       aux.id_msg = -1;
       return aux;
    }
+   LEMEMLOG((long int)(&mensagem), (long int)sizeof(int), memlog);
+   LEMEMLOG((long int)(&no->mensagem), (long int)sizeof(int), memlog);
    if (mensagem.id_msg < no->mensagem.id_msg)
-      return pesquisa_recursivo(no->esq, mensagem);
+      return pesquisa_recursivo(no->esq, mensagem, memlog);
    else if (mensagem.id_msg > no->mensagem.id_msg)
-      return pesquisa_recursivo(no->dir, mensagem);
+      return pesquisa_recursivo(no->dir, mensagem, memlog);
    else
       return no->mensagem;
 }
-void bintree::remove(email mensagem)
+void bintree::remove(email mensagem, int memlog)
 {
-   return remove_recursivo(raiz, mensagem);
+   return remove_recursivo(raiz, mensagem, memlog);
 }
-void bintree::remove_recursivo(tipo_no *&no, email mensagem)
+void bintree::remove_recursivo(tipo_no *&no, email mensagem, int memlog)
 {
    tipo_no *aux;
 
@@ -88,10 +92,12 @@ void bintree::remove_recursivo(tipo_no *&no, email mensagem)
    {
       saida << "ERRO: MENSAGEM INEXISTENTE" << endl;
    }
+   LEMEMLOG((long int)(&mensagem), (long int)sizeof(int), memlog);
+   LEMEMLOG((long int)(&no->mensagem), (long int)sizeof(int), memlog);
    if (mensagem.id_msg < no->mensagem.id_msg)
-      return remove_recursivo(no->esq, mensagem);
+      return remove_recursivo(no->esq, mensagem, memlog);
    else if (mensagem.id_msg > no->mensagem.id_msg)
-      return remove_recursivo(no->dir, mensagem);
+      return remove_recursivo(no->dir, mensagem, memlog);
    else
    {
       if (no->dir == NULL)
@@ -145,12 +151,12 @@ int hashtable::hash_id(email mensagem, int M)
    int aux = (mensagem.id_dest % M);
    return aux;
 }
-email hashtable::pesquisa(email mensagem, int M, int Tipo)
+email hashtable::pesquisa(email mensagem, int M, int Tipo, int memlog)
 {
    int pos;
    email texto_aux;
    pos = hash_id(mensagem, M);
-   texto_aux = table[pos].pesquisa(mensagem);
+   texto_aux = table[pos].pesquisa(mensagem, memlog);
 
    ofstream saida(mensagem.output_file, ios::app);
 
@@ -168,34 +174,34 @@ email hashtable::pesquisa(email mensagem, int M, int Tipo)
    saida.close();
    return mensagem;
 }
-void hashtable::insere(email mensagem, int M)
+void hashtable::insere(email mensagem, int M, int memlog)
 {
    email aux;
    int pos;
    ofstream saida(mensagem.output_file, ios::app);
 
-   aux = pesquisa(mensagem, M, 0);
+   aux = pesquisa(mensagem, M, 0, memlog);
    pos = hash_id(mensagem, M);
-   table[pos].insere(mensagem);
+   table[pos].insere(mensagem, memlog);
 
    saida << "OK: MENSAGEM " << mensagem.id_msg << " PARA " << mensagem.id_dest << " ARMAZENADA EM " << pos << endl;
 
    saida.close();
 }
-void hashtable::remove(email mensagem, int M)
+void hashtable::remove(email mensagem, int M, int memlog)
 {
    int pos;
    email texto_aux;
    ofstream saida(mensagem.output_file, ios::app);
    pos = hash_id(mensagem, M);
-   texto_aux = table[pos].pesquisa(mensagem);
+   texto_aux = table[pos].pesquisa(mensagem, memlog);
 
    if (texto_aux.id_msg == -1)
    {
       saida << "ERRO: MENSAGEM INEXISTENTE" << endl;
    }
    else
-      table[pos].remove(mensagem);
+      table[pos].remove(mensagem, memlog);
    saida.close();
 }
 
@@ -208,17 +214,16 @@ void entregar_email(hashtable *servidor, email mensagem, int U, string _texto, i
 
    ESCREVEMEMLOG((long int)(&mensagem), (long int)sizeof(int), 0);
 
-   servidor->insere(mensagem, M);
+   servidor->insere(mensagem, M, 0);
 }
 void consultar_email(hashtable *servidor, email mensagem, int U, int M, int E)
 {
-   email resposta;
    mensagem.id_msg = E;
    mensagem.id_dest = U;
 
    ESCREVEMEMLOG((long int)(&mensagem), (long int)sizeof(int), 1);
 
-   resposta = servidor->pesquisa(mensagem, M, 1);
+   servidor->pesquisa(mensagem, M, 1, 1);
 }
 void apagar_email(hashtable *servidor, email mensagem, int U, int M, int E)
 {
@@ -227,7 +232,7 @@ void apagar_email(hashtable *servidor, email mensagem, int U, int M, int E)
 
    ESCREVEMEMLOG((long int)(&mensagem), (long int)sizeof(int), 2);
 
-   servidor->remove(mensagem, M);
+   servidor->remove(mensagem, M, 2);
 }
 
 void uso()
