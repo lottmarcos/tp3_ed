@@ -31,23 +31,23 @@ bintree::~bintree()
 {
    limpa();
 }
-void bintree::insere(email e)
+void bintree::insere(email mensagem)
 {
-   insere_recursivo(raiz, e);
+   insere_recursivo(raiz, mensagem);
 }
-void bintree::insere_recursivo(tipo_no *&p, email e)
+void bintree::insere_recursivo(tipo_no *&p, email mensagem)
 {
    if (p == NULL)
    {
       p = new tipo_no();
-      p->e = e;
+      p->mensagem = mensagem;
    }
    else
    {
-      if (e.id_msg < p->e.id_msg)
-         insere_recursivo(p->esq, e);
+      if (mensagem.id_msg < p->mensagem.id_msg)
+         insere_recursivo(p->esq, mensagem);
       else
-         insere_recursivo(p->dir, e);
+         insere_recursivo(p->dir, mensagem);
    }
 }
 void bintree::limpa()
@@ -55,11 +55,11 @@ void bintree::limpa()
    apaga_recursivo(raiz);
    raiz = NULL;
 }
-email bintree::pesquisa(email e)
+email bintree::pesquisa(email mensagem)
 {
-   return pesquisa_recursivo(raiz, e);
+   return pesquisa_recursivo(raiz, mensagem);
 }
-email bintree::pesquisa_recursivo(tipo_no *no, email e)
+email bintree::pesquisa_recursivo(tipo_no *no, email mensagem)
 {
    email aux;
    if (no == NULL)
@@ -67,31 +67,31 @@ email bintree::pesquisa_recursivo(tipo_no *no, email e)
       aux.id_msg = -1;
       return aux;
    }
-   if (e.id_msg < no->e.id_msg)
-      return pesquisa_recursivo(no->esq, e);
-   else if (e.id_msg > no->e.id_msg)
-      return pesquisa_recursivo(no->dir, e);
+   if (mensagem.id_msg < no->mensagem.id_msg)
+      return pesquisa_recursivo(no->esq, mensagem);
+   else if (mensagem.id_msg > no->mensagem.id_msg)
+      return pesquisa_recursivo(no->dir, mensagem);
    else
-      return no->e;
+      return no->mensagem;
 }
-void bintree::remove(email e)
+void bintree::remove(email mensagem)
 {
-   return remove_recursivo(raiz, e);
+   return remove_recursivo(raiz, mensagem);
 }
-void bintree::remove_recursivo(tipo_no *&no, email e)
+void bintree::remove_recursivo(tipo_no *&no, email mensagem)
 {
    tipo_no *aux;
 
-   ofstream saida(no->e.output_file, ios::app);
+   ofstream saida(no->mensagem.output_file, ios::app);
 
    if (no == NULL)
    {
       saida << "ERRO: MENSAGEM INEXISTENTE" << endl;
    }
-   if (e.id_msg < no->e.id_msg)
-      return remove_recursivo(no->esq, e);
-   else if (e.id_msg > no->e.id_msg)
-      return remove_recursivo(no->dir, e);
+   if (mensagem.id_msg < no->mensagem.id_msg)
+      return remove_recursivo(no->esq, mensagem);
+   else if (mensagem.id_msg > no->mensagem.id_msg)
+      return remove_recursivo(no->dir, mensagem);
    else
    {
       if (no->dir == NULL)
@@ -129,7 +129,7 @@ void bintree::antecessor(tipo_no *q, tipo_no *&r)
       antecessor(q, r->dir);
       return;
    }
-   q->e = r->e;
+   q->mensagem = r->mensagem;
    q = r;
    r = r->esq;
    free(q);
@@ -140,25 +140,25 @@ hashtable::hashtable(int M)
 {
    this->table = new bintree[M];
 }
-int hashtable::hash_id(email e, int M)
+int hashtable::hash_id(email mensagem, int M)
 {
-   int aux = (e.id_msg % M);
+   int aux = (mensagem.id_msg % M);
    return aux;
 }
-email hashtable::pesquisa(email e, int M, int Tipo)
+email hashtable::pesquisa(email mensagem, int M, int Tipo)
 {
    int pos;
    email texto_aux;
-   pos = hash_id(e, M);
-   texto_aux = table[pos].pesquisa(e);
+   pos = hash_id(mensagem, M);
+   texto_aux = table[pos].pesquisa(mensagem);
 
-   ofstream saida(e.output_file, ios::app);
+   ofstream saida(mensagem.output_file, ios::app);
 
    if (Tipo == 1)
    {
-      if (texto_aux.id_msg == -1 || texto_aux.id_dest != e.id_dest)
+      if (texto_aux.id_msg == -1 || texto_aux.id_dest != mensagem.id_dest)
       {
-         saida << "CONSULTA " << e.id_dest << " " << e.id_msg << ": MENSAGEM INEXISTENTE" << endl;
+         saida << "CONSULTA " << mensagem.id_dest << " " << mensagem.id_msg << ": MENSAGEM INEXISTENTE" << endl;
       }
       else
       {
@@ -166,68 +166,68 @@ email hashtable::pesquisa(email e, int M, int Tipo)
       }
    }
    saida.close();
-   return e;
+   return mensagem;
 }
-void hashtable::insere(email e, int M)
+void hashtable::insere(email mensagem, int M)
 {
    email aux;
    int pos;
-   ofstream saida(e.output_file, ios::app);
+   ofstream saida(mensagem.output_file, ios::app);
 
-   aux = pesquisa(e, M, 0);
-   pos = hash_id(e, M);
-   table[pos].insere(e);
+   aux = pesquisa(mensagem, M, 0);
+   pos = hash_id(mensagem, M);
+   table[pos].insere(mensagem);
 
-   saida << "OK: MENSAGEM " << e.id_msg << " PARA " << e.id_dest << " ARMAZENADA EM " << pos << endl;
+   saida << "OK: MENSAGEM " << mensagem.id_msg << " PARA " << mensagem.id_dest << " ARMAZENADA EM " << pos << endl;
 
    saida.close();
 }
-void hashtable::remove(email e, int M)
+void hashtable::remove(email mensagem, int M)
 {
    int pos;
    email texto_aux;
-   ofstream saida(e.output_file, ios::app);
-   pos = hash_id(e, M);
-   texto_aux = table[pos].pesquisa(e);
+   ofstream saida(mensagem.output_file, ios::app);
+   pos = hash_id(mensagem, M);
+   texto_aux = table[pos].pesquisa(mensagem);
 
    if (texto_aux.id_msg == -1)
    {
       saida << "ERRO: MENSAGEM INEXISTENTE" << endl;
    }
    else
-      table[pos].remove(e);
+      table[pos].remove(mensagem);
    saida.close();
 }
 
 // FUNÇÕES GLOBAIS
-void entregar_email(hashtable *server, email e, int U, string _texto, int M, int E)
+void entregar_email(hashtable *servidor, email mensagem, int U, string _texto, int M, int E)
 {
-   e.id_msg = E;
-   e.texto = _texto;
-   e.id_dest = U;
+   mensagem.id_msg = E;
+   mensagem.texto = _texto;
+   mensagem.id_dest = U;
 
-   ESCREVEMEMLOG((long int)(&e), (long int)sizeof(int), 0);
+   ESCREVEMEMLOG((long int)(&mensagem), (long int)sizeof(int), 0);
 
-   server->insere(e, M);
+   servidor->insere(mensagem, M);
 }
-void consultar_email(hashtable *server, email e, int U, int M, int E)
+void consultar_email(hashtable *servidor, email mensagem, int U, int M, int E)
 {
    email resposta;
-   e.id_msg = E;
-   e.id_dest = U;
+   mensagem.id_msg = E;
+   mensagem.id_dest = U;
 
-   ESCREVEMEMLOG((long int)(&e), (long int)sizeof(int), 1);
+   ESCREVEMEMLOG((long int)(&mensagem), (long int)sizeof(int), 1);
 
-   resposta = server->pesquisa(e, M, 1);
+   resposta = servidor->pesquisa(mensagem, M, 1);
 }
-void apagar_email(hashtable *server, email e, int U, int M, int E)
+void apagar_email(hashtable *servidor, email mensagem, int U, int M, int E)
 {
-   e.id_msg = E;
-   e.id_dest = U;
+   mensagem.id_msg = E;
+   mensagem.id_dest = U;
 
-   ESCREVEMEMLOG((long int)(&e), (long int)sizeof(int), 2);
+   ESCREVEMEMLOG((long int)(&mensagem), (long int)sizeof(int), 2);
 
-   server->remove(e, M);
+   servidor->remove(mensagem, M);
 }
 
 void uso()

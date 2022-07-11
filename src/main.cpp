@@ -71,13 +71,52 @@ int main(int argc, char **argv)
    // ----------------- INICIO DO PROGRAMA ----------------- //
    // variáveis iniciais e auxiliares
    string CONSULTA = "CONSULTA", APAGA = "APAGA", ENTREGA = "ENTREGA";
-   string str, trash, palavra;
+   string aux;
    int M = 0, U = 0, E = 0, N = 0;
 
    // consegue o tamanho da tabela hash
    input_file >> M;
 
-   cout << "M: " << M << endl;
+   // criação das estruturas de dados utilizadas
+   hashtable *servidor = new hashtable(M);
+   email mensagem;
+   mensagem.output_file = name_output;
 
+   // loop principal para a execução do programa
+   while (input_file >> aux)
+   {
+      // realiza a função ENTREGAR
+      if (aux == ENTREGA)
+      {
+         string MSG;
+         string palavra;
+         input_file >> U >> E >> N;
+
+         for (int i = 0; i < N; i++)
+         {
+            input_file >> palavra;
+            MSG += palavra;
+            if (i + 1 < N)
+            {
+               MSG += " ";
+            }
+         }
+         entregar_email(servidor, mensagem, U, MSG, M, E);
+      }
+      // realiza a função CONSULTAR
+      else if (aux == CONSULTA)
+      {
+         input_file >> U >> E;
+         consultar_email(servidor, mensagem, U, M, E);
+      }
+      // realiza a função APAGAR
+      else if (aux == APAGA)
+      {
+         input_file >> U >> E;
+         apagar_email(servidor, mensagem, U, M, E);
+      }
+   }
+
+   output_file.close();
    return finalizaMemLog();
 }
