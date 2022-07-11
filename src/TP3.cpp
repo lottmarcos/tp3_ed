@@ -142,7 +142,7 @@ hashtable::hashtable(int M)
 }
 int hashtable::hash_id(email mensagem, int M)
 {
-   int aux = (mensagem.id_msg % M);
+   int aux = (mensagem.id_dest % M);
    return aux;
 }
 email hashtable::pesquisa(email mensagem, int M, int Tipo)
@@ -203,8 +203,8 @@ void hashtable::remove(email mensagem, int M)
 void entregar_email(hashtable *servidor, email mensagem, int U, string _texto, int M, int E)
 {
    mensagem.id_msg = E;
-   mensagem.texto = _texto;
    mensagem.id_dest = U;
+   mensagem.texto = _texto;
 
    ESCREVEMEMLOG((long int)(&mensagem), (long int)sizeof(int), 0);
 
