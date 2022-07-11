@@ -80,7 +80,7 @@ int main(int argc, char **argv)
    // criação das estruturas de dados utilizadas
    hashtable *servidor = new hashtable(M);
    email mensagem;
-   mensagem.output_file = name_output;
+   set_output(name_output);
 
    // loop principal para a execução do programa
    while (input_file >> aux)

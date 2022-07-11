@@ -2,6 +2,9 @@
 
 using namespace std;
 
+// definição do arquivo de saída
+string name_output;
+
 // TAD EMAIL
 email::email()
 {
@@ -84,7 +87,7 @@ void bintree::remove_recursivo(tipo_no *&no, email mensagem, int memlog)
 {
    tipo_no *aux;
 
-   ofstream saida(no->mensagem.output_file, ios::app);
+   ofstream saida(name_output, ios::app);
 
    if (no == NULL)
    {
@@ -155,7 +158,7 @@ email hashtable::pesquisa(email mensagem, int M, int Tipo, int memlog)
    pos = hash_id(mensagem, M);
    texto_aux = table[pos].pesquisa(mensagem, memlog);
 
-   ofstream saida(mensagem.output_file, ios::app);
+   ofstream saida(name_output, ios::app);
 
    if (Tipo == 1)
    {
@@ -175,7 +178,7 @@ void hashtable::insere(email mensagem, int M, int memlog)
 {
    email aux;
    int pos;
-   ofstream saida(mensagem.output_file, ios::app);
+   ofstream saida(name_output, ios::app);
 
    aux = pesquisa(mensagem, M, 0, memlog);
    pos = hash_id(mensagem, M);
@@ -189,7 +192,7 @@ void hashtable::remove(email mensagem, int M, int memlog)
 {
    int pos;
    email texto_aux;
-   ofstream saida(mensagem.output_file, ios::app);
+   ofstream saida(name_output, ios::app);
    pos = hash_id(mensagem, M);
    texto_aux = table[pos].pesquisa(mensagem, memlog);
 
@@ -232,6 +235,10 @@ void apagar_email(hashtable *servidor, email mensagem, int U, int M, int E)
    servidor->remove(mensagem, M, 2);
 }
 
+void set_output(string filename)
+{
+   name_output = filename;
+}
 void uso()
 {
    // -[o|O] : endereço do arquivo de saída
