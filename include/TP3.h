@@ -82,6 +82,5 @@ void apagar_email(hashtable *servidor, email mensagem, int U, int M, int E);
 void set_output(string filename);
 void parse_args(int argc, char **argv);
 void uso();
-int count_words(string str);
 
 #endif

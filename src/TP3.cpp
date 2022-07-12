@@ -176,11 +176,9 @@ email hashtable::pesquisa(email mensagem, int M, int Tipo, int memlog)
 }
 void hashtable::insere(email mensagem, int M, int memlog)
 {
-   email aux;
    int pos;
    ofstream saida(name_output, ios::app);
 
-   aux = pesquisa(mensagem, M, 0, memlog);
    pos = hash_id(mensagem, M);
    table[pos].insere(mensagem, memlog);
 
@@ -248,14 +246,4 @@ void uso()
    cout << "\t-[i|I] : arquivo de entrada" << endl;
    cout << "\t-[o|O] : endereço do arquivo de saída" << endl;
    cout << endl;
-}
-int count_words(string str)
-{
-   stringstream s(str);
-   string word;
-
-   int count = 0;
-   while (s >> word)
-      count++;
-   return count;
 }
